@@ -33,9 +33,8 @@ export default async function handler(
           maxReactions: 500,
         };
 
-        const imageUrl = `${
-          process.env["HOST"]
-        }/api/image?data=${encodeUserInfoArguments(
+        const hosted_url = `https://${req.headers["host"]}`;
+        const imageUrl = `${hosted_url}/api/image?data=${encodeUserInfoArguments(
           userData
         )}&date=${Date.now()}`;
 
