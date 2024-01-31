@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function Home() {
   const headersList = headers(); 
-  const hosted_url = headersList.get('host');
+  const hosted_url = `https://${headersList.get('host')}`;
 
   return (
     <>
