@@ -28,7 +28,7 @@ export default function Home() {
           <meta property="fc:frame:button:1" content="Click to view usage" />
           
           <meta property="fc:frame:image" content={`${hosted_url}/landing.png`} />
-          <meta property="fc:frame:post_url" content={`${hosted_url}/api/`} />
+          <meta property="fc:frame:post_url" content={`${hosted_url}/api/route`} />
 
       </head>
     </>
