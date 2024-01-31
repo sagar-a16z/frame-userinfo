@@ -45,8 +45,8 @@ export default async function getResponse(
   <!DOCTYPE html>
   <html>
     <head>
-      <title>Vote Recorded</title>
-      <meta property="og:title" content="Vote Recorded">
+      <title>Protocol Usage</title>
+      <meta property="og:title" content="Protocol Usage">
       <meta property="og:image" content="${imageUrl}">
       <meta name="fc:frame" content="vNext">
       <meta name="fc:frame:image" content="${imageUrl}">
