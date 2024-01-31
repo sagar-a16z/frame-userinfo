@@ -4,13 +4,6 @@ import { headers } from 'next/headers';
 export const metadata: Metadata = {
   title: 'frame-userinfo',
   description: 'See your Farcaster usage',
-  // openGraph: {
-  //   title: 'frame-userinfo',
-  //   description: 'See your Farcaster usage',
-  //   images: ['https://zizzamia.xyz/park-1.png'],
-  // },
-  // other: {
-  //   },
 };
 
 export default function Home() {
