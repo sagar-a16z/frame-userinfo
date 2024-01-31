@@ -46,13 +46,13 @@ function makeSVGBuffer(userInfo: UserInfoArguments): Buffer {
 
   <!-- Progress Bars: Adjust 'width' to represent the stat value -->
   <!-- Casts Bar -->
-  <rect x="20" y="100" width={${userInfo.casts} / ${userInfo.maxCasts} * ${maxUsageWidth})}} height="20" fill="gray" />
+  <rect x="20" y="100" width={${userInfo.casts} / ${userInfo.maxCasts} * ${maxUsageWidth}} height="20" fill="gray" />
   
   <!-- Reactions Bar -->
-  <rect x="20" y="170" width={${userInfo.reactions} / ${userInfo.maxReactions} * ${maxUsageWidth})}} height="20" fill="gray" />
+  <rect x="20" y="170" width={${userInfo.reactions} / ${userInfo.maxReactions} * ${maxUsageWidth}} height="20" fill="gray" />
 
   <!-- Follows Bar -->
-  <rect x="20" y="240" width={${userInfo.casts} / ${userInfo.maxCasts} * ${maxUsageWidth})}} height="20" fill="gray" />
+  <rect x="20" y="240" width={${userInfo.casts} / ${userInfo.maxCasts} * ${maxUsageWidth}} height="20" fill="gray" />
 </svg>`;
   return Buffer.from(svgString);
 }
