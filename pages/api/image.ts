@@ -26,33 +26,39 @@ export function decodeUserInfoArguments(data: string): UserInfoArguments {
 
 function makeSVGBuffer(userInfo: UserInfoArguments): Buffer {
   const maxUsageWidth = 690;
+  const castBarSize = (userInfo.casts / userInfo.maxCasts) * maxUsageWidth;
+  const reactionsBarSize =
+    (userInfo.reactions / userInfo.reactions) * maxUsageWidth;
 
+  const fontLargeSize = 20;
+  const fontMedSize = 16;
+  const fontSmlSize = 14;
   const svgString = `<svg width="800" height="418" xmlns="http://www.w3.org/2000/svg">
   <!-- Background -->
   <rect width="100%" height="100%" fill="#333" />
 
   <!-- FID Text -->
-  <text x="20" y="30" fill="white" font-family="Arial" font-size="16">FID: ${userInfo.fid}</text>
+  <text x="20" y="30" fill="white" font-family="Arial" font-size="${fontLargeSize}" font-weight="bold">FID: ${userInfo.fid}</text>
 
   <!-- Labels -->
-  <text x="20" y="80" fill="white" font-family="Arial" font-size="14">Casts</text>
-  <text x="20" y="150" fill="white" font-family="Arial" font-size="14">Reactions</text>
-  <text x="20" y="220" fill="white" font-family="Arial" font-size="14">Follows</text>
+  <text x="20" y="80" fill="white" font-family="Arial" font-size="${fontMedSize}" font-weight="bold">Casts</text>
+  <text x="20" y="150" fill="white" font-family="Arial" font-size="${fontMedSize}" font-weight="bold">Reactions</text>
+  <text x="20" y="220" fill="white" font-family="Arial" font-size="${fontMedSize}" font-weight="bold">Follows</text>
 
   <!-- Maximum Value Text -->
-  <text x="720" y="115" fill="white" font-family="Arial" font-size="12">${userInfo.maxCasts}</text>
-  <text x="720" y="185" fill="white" font-family="Arial" font-size="12">${userInfo.maxReactions}</text>
-  <text x="720" y="255" fill="white" font-family="Arial" font-size="12">50000</text>
+  <text x="720" y="115" fill="white" font-family="Arial" font-size="${fontSmlSize}" font-weight="bold">${userInfo.maxCasts}</text>
+  <text x="720" y="185" fill="white" font-family="Arial" font-size="${fontSmlSize}" font-weight="bold">${userInfo.maxReactions}</text>
+  <text x="720" y="255" fill="white" font-family="Arial" font-size="${fontSmlSize}" font-weight="bold">50000</text>
 
   <!-- Progress Bars: Adjust 'width' to represent the stat value -->
   <!-- Casts Bar -->
-  <rect x="20" y="100" width={${userInfo.casts} / ${userInfo.maxCasts} * ${maxUsageWidth})}} height="20" fill="gray" />
+  <rect x="20" y="100" width="${castBarSize}" height="20" fill="gray" />
   
   <!-- Reactions Bar -->
-  <rect x="20" y="170" width={${userInfo.reactions} / ${userInfo.maxReactions} * ${maxUsageWidth})}} height="20" fill="gray" />
+  <rect x="20" y="170" width="${reactionsBarSize}" height="20" fill="gray" />
 
   <!-- Follows Bar -->
-  <rect x="20" y="240" width={${userInfo.casts} / ${userInfo.maxCasts} * ${maxUsageWidth})}} height="20" fill="gray" />
+  <rect x="20" y="240" width="${castBarSize}" height="20" fill="gray" />
 </svg>`;
   return Buffer.from(svgString);
 }
