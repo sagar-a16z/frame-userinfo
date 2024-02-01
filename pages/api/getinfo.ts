@@ -26,16 +26,15 @@ export default async function handler(
           validatedMessage = result.value.message;
         }
 
-        const userData: UserInfoArguments = {};
         const fid = validatedMessage?.data?.fid || 0;
-        let storageUnits = 0;
+        const userData: UserInfoArguments = { fid };
 
         const storageLimitResult = await client.getCurrentStorageLimitsByFid(
           FidRequest.create({ fid })
         );
         if (storageLimitResult.isOk()) {
           const storageLimits = storageLimitResult.value;
-          storageUnits = storageLimits.units;
+          userData.storageUnits = storageLimits.units;
           for (const limit of storageLimits.limits) {
             switch (limit.storeType) {
               case StoreType.CASTS:
