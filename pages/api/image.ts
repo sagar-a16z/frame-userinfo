@@ -41,12 +41,16 @@ function makeSVGBuffer(userInfo: UserInfoArguments): Buffer {
   const maxUsageWidth = 670;
 
   const castBarSize = calculateBarSize(userInfo.castsLimit, maxUsageWidth);
+  const linksBarSize = calculateBarSize(userInfo.linksLimit, maxUsageWidth);
   const reactionsBarSize = calculateBarSize(
     userInfo.reactionsLimit,
     maxUsageWidth
   );
-  const linksBarSize = calculateBarSize(userInfo.linksLimit, maxUsageWidth);
-  const svgString = `<svg width="800" height="418" xmlns="http://www.w3.org/2000/svg">
+  const verificationsBarSize = calculateBarSize(
+    userInfo.verificationsLimit,
+    maxUsageWidth
+  );
+  const svgString = `<svg width="800" height="458" xmlns="http://www.w3.org/2000/svg">
   <!-- Background -->
   <rect width="100%" height="100%" fill="#333" />
 
@@ -57,25 +61,30 @@ function makeSVGBuffer(userInfo: UserInfoArguments): Buffer {
   <text x="40" y="130" fill="white" font-family="Arial" font-size="${fontMedSize}" font-weight="bold">Casts (${userInfo.castsLimit?.used}/${userInfo.castsLimit?.limit})</text>
   <text x="40" y="200" fill="white" font-family="Arial" font-size="${fontMedSize}" font-weight="bold">Reactions (${userInfo.reactionsLimit?.used}/${userInfo.reactionsLimit?.limit})</text>
   <text x="40" y="270" fill="white" font-family="Arial" font-size="${fontMedSize}" font-weight="bold">Links (${userInfo.linksLimit?.used}/${userInfo.linksLimit?.limit})</text>
+  <text x="40" y="340" fill="white" font-family="Arial" font-size="${fontMedSize}" font-weight="bold">Verifications (${userInfo.verificationsLimit?.used}/${userInfo.verificationsLimit?.limit})</text>
 
   <!-- Maximums -->
   <text x="720" y="165" fill="white" font-family="Arial" font-size="${fontSmlSize}" font-weight="bold">${userInfo.castsLimit?.limit}</text>
   <text x="720" y="235" fill="white" font-family="Arial" font-size="${fontSmlSize}" font-weight="bold">${userInfo.reactionsLimit?.limit}</text>
   <text x="720" y="305" fill="white" font-family="Arial" font-size="${fontSmlSize}" font-weight="bold">${userInfo.linksLimit?.limit}</text>
+  <text x="720" y="375" fill="white" font-family="Arial" font-size="${fontSmlSize}" font-weight="bold">${userInfo.verificationsLimit?.limit}</text>
 
   <!-- Progress Bars -->
   <!-- Casts Bar -->
   <rect x="40" y="150" width="${maxUsageWidth}" height="20" style="fill:#333;stroke-width:1;stroke:#808080"/>
   <rect x="40" y="150" width="${castBarSize}" height="20" fill="#808080" />
 
-  
   <!-- Reactions Bar -->
   <rect x="40" y="220" width="${maxUsageWidth}" height="20" style="fill:#333;stroke-width:1;stroke:#808080"/>
   <rect x="40" y="220" width="${reactionsBarSize}" height="20" fill="#808080" />
 
-  <!-- Follows Bar -->
+  <!-- Links Bar -->
   <rect x="40" y="290" width="${maxUsageWidth}" height="20" style="fill:#333;stroke-width:1;stroke:#808080"/>
   <rect x="40" y="290" width="${linksBarSize}" height="20" fill="#808080" />
+
+  <!-- Verifications Bar -->
+  <rect x="40" y="360" width="${maxUsageWidth}" height="20" style="fill:#333;stroke-width:1;stroke:#808080"/>
+  <rect x="40" y="360" width="${verificationsBarSize}" height="20" fill="#808080" />
 </svg>`;
   return Buffer.from(svgString);
 }
