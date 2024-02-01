@@ -18,7 +18,6 @@ export default async function handler(
       return res.status(500).send(`No Hub to talk to :(`);
     }
     const client = getSSLHubRpcClient(HUB_URL);
-
     try {
       let validatedMessage: Message | undefined = undefined;
       try {
@@ -77,6 +76,8 @@ export default async function handler(
       <meta property="og:image" content="${imageUrl}">
       <meta name="fc:frame" content="vNext">
       <meta name="fc:frame:image" content="${imageUrl}">
+      <meta property="fc:frame:button:1" content="Reload">
+      <meta property="fc:frame:post_url" content=${hosted_url}/api/getinfo>
     </head>
   </html>
   `);
