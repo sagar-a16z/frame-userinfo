@@ -18,10 +18,10 @@ export default function Home() {
           <meta property="og:image" content={`${hosted_url}/landing.png`} />
           
           <meta property="fc:frame" content="vNext" />
-          <meta property="fc:frame:button:1" content="Click to view usage" />
+          <meta property="fc:frame:button:1" content="Press to view your stats" />
           
           <meta property="fc:frame:image" content={`${hosted_url}/landing.png`} />
-          <meta property="fc:frame:post_url" content={`${hosted_url}/api/route`} />
+          <meta property="fc:frame:post_url" content={`${hosted_url}/api/getinfo`} />
 
       </head>
     </>

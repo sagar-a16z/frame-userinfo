@@ -1,12 +1,14 @@
+import { StorageLimit } from "@farcaster/hub-nodejs";
 import { NextApiRequest, NextApiResponse } from "next";
 import sharp from "sharp";
 
 export type UserInfoArguments = {
-  fid: number;
-  casts: number;
-  maxCasts: number;
-  reactions: number;
-  maxReactions: number;
+  fid?: number;
+  castsLimit?: StorageLimit;
+  reactionsLimit?: StorageLimit;
+  linksLimit?: StorageLimit;
+  verificationsLimit?: StorageLimit;
+  storageUnits?: number;
 };
 
 // function that can encode any UserInfoArgument into a base64 string
@@ -24,41 +26,56 @@ export function decodeUserInfoArguments(data: string): UserInfoArguments {
   return decodedArgs;
 }
 
-function makeSVGBuffer(userInfo: UserInfoArguments): Buffer {
-  const maxUsageWidth = 690;
-  const castBarSize = (userInfo.casts / userInfo.maxCasts) * maxUsageWidth;
-  const reactionsBarSize =
-    (userInfo.reactions / userInfo.reactions) * maxUsageWidth;
+function calculateBarSize(
+  storageLimit: StorageLimit | undefined,
+  max: number
+): number {
+  return (storageLimit?.used || 0 / (storageLimit?.limit || 1)) * max;
+}
 
+function makeSVGBuffer(userInfo: UserInfoArguments): Buffer {
+  // Maybe use satori so it's not so painfully static?
   const fontLargeSize = 20;
   const fontMedSize = 16;
   const fontSmlSize = 14;
+  const maxUsageWidth = 670;
+
+  const castBarSize = calculateBarSize(userInfo.castsLimit, maxUsageWidth);
+  const reactionsBarSize = calculateBarSize(
+    userInfo.reactionsLimit,
+    maxUsageWidth
+  );
+
   const svgString = `<svg width="800" height="418" xmlns="http://www.w3.org/2000/svg">
   <!-- Background -->
   <rect width="100%" height="100%" fill="#333" />
 
   <!-- FID Text -->
-  <text x="20" y="30" fill="white" font-family="Arial" font-size="${fontLargeSize}" font-weight="bold">FID: ${userInfo.fid}</text>
+  <text x="40" y="30" fill="white" font-family="Arial" font-size="${fontLargeSize}" font-weight="bold">FID: ${userInfo.fid} (${userInfo.storageUnits} Units of Storage)</text>
 
   <!-- Labels -->
-  <text x="20" y="80" fill="white" font-family="Arial" font-size="${fontMedSize}" font-weight="bold">Casts</text>
-  <text x="20" y="150" fill="white" font-family="Arial" font-size="${fontMedSize}" font-weight="bold">Reactions</text>
-  <text x="20" y="220" fill="white" font-family="Arial" font-size="${fontMedSize}" font-weight="bold">Follows</text>
+  <text x="40" y="130" fill="white" font-family="Arial" font-size="${fontMedSize}" font-weight="bold">Casts (${userInfo.castsLimit?.used}/${userInfo.castsLimit?.limit})</text>
+  <text x="40" y="200" fill="white" font-family="Arial" font-size="${fontMedSize}" font-weight="bold">Reactions (${userInfo.reactionsLimit?.used}/${userInfo.reactionsLimit?.limit})</text>
+  <text x="40" y="270" fill="white" font-family="Arial" font-size="${fontMedSize}" font-weight="bold">Links (${userInfo.linksLimit?.used}/${userInfo.linksLimit?.limit})</text>
 
-  <!-- Maximum Value Text -->
-  <text x="720" y="115" fill="white" font-family="Arial" font-size="${fontSmlSize}" font-weight="bold">${userInfo.maxCasts}</text>
-  <text x="720" y="185" fill="white" font-family="Arial" font-size="${fontSmlSize}" font-weight="bold">${userInfo.maxReactions}</text>
-  <text x="720" y="255" fill="white" font-family="Arial" font-size="${fontSmlSize}" font-weight="bold">50000</text>
+  <!-- Maximums -->
+  <text x="720" y="165" fill="white" font-family="Arial" font-size="${fontSmlSize}" font-weight="bold">${userInfo.castsLimit?.limit}</text>
+  <text x="720" y="235" fill="white" font-family="Arial" font-size="${fontSmlSize}" font-weight="bold">${userInfo.reactionsLimit?.limit}</text>
+  <text x="720" y="305" fill="white" font-family="Arial" font-size="${fontSmlSize}" font-weight="bold">${userInfo.linksLimit?.limit}</text>
 
-  <!-- Progress Bars: Adjust 'width' to represent the stat value -->
+  <!-- Progress Bars -->
   <!-- Casts Bar -->
-  <rect x="20" y="100" width="${castBarSize}" height="20" fill="gray" />
+  <rect x="40" y="150" width="${maxUsageWidth}" height="20" style="fill:#333;stroke-width:1;stroke:#808080"/>
+  <rect x="40" y="150" width="${castBarSize}" height="20" fill="#808080" />
+
   
   <!-- Reactions Bar -->
-  <rect x="20" y="170" width="${reactionsBarSize}" height="20" fill="gray" />
+  <rect x="40" y="220" width="${maxUsageWidth}" height="20" style="fill:#333;stroke-width:1;stroke:#808080"/>
+  <rect x="40" y="220" width="${reactionsBarSize}" height="20" fill="#808080" />
 
   <!-- Follows Bar -->
-  <rect x="20" y="240" width="${castBarSize}" height="20" fill="gray" />
+  <rect x="40" y="290" width="${maxUsageWidth}" height="20" style="fill:#333;stroke-width:1;stroke:#808080"/>
+  <rect x="40" y="290" width="${castBarSize}" height="20" fill="#808080" />
 </svg>`;
   return Buffer.from(svgString);
 }
