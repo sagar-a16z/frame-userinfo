@@ -7,14 +7,18 @@ import {
 } from "@farcaster/hub-nodejs";
 import { UserInfoArguments, encodeUserInfoArguments } from "./image";
 
-const HUB_URL = process.env["HUB_URL"] || "nemes.farcaster.xyz:2283";
-const client = getSSLHubRpcClient(HUB_URL);
+const HUB_URL = process.env["HUB_URL"];
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   if (req.method == "POST") {
+    if (!HUB_URL) {
+      return res.status(500).send(`No Hub to talk to :(`);
+    }
+    const client = getSSLHubRpcClient(HUB_URL);
+
     try {
       let validatedMessage: Message | undefined = undefined;
       try {
@@ -56,16 +60,6 @@ export default async function handler(
         } else {
           return res.status(400).send("Missing user data");
         }
-
-        // const userData: UserInfoArguments = {
-        //   fid: fid,
-        //   fname: "doe",
-        //   storageUnits,
-        //   casts: 10,
-        //   maxCasts: 500,
-        //   reactions: 500,
-        //   maxReactions: 500,
-        // };
 
         const hosted_url = `https://${req.headers["host"]}`;
         const imageUrl = `${hosted_url}/api/image?data=${encodeUserInfoArguments(

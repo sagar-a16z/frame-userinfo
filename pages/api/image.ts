@@ -45,13 +45,13 @@ function makeSVGBuffer(userInfo: UserInfoArguments): Buffer {
     userInfo.reactionsLimit,
     maxUsageWidth
   );
-
+  const linksBarSize = calculateBarSize(userInfo.linksLimit, maxUsageWidth);
   const svgString = `<svg width="800" height="418" xmlns="http://www.w3.org/2000/svg">
   <!-- Background -->
   <rect width="100%" height="100%" fill="#333" />
 
   <!-- FID Text -->
-  <text x="40" y="30" fill="white" font-family="Arial" font-size="${fontLargeSize}" font-weight="bold">FID: ${userInfo.fid} (${userInfo.storageUnits} Units of Storage)</text>
+  <text x="40" y="50" fill="white" font-family="Arial" font-size="${fontLargeSize}" font-weight="bold">FID: ${userInfo.fid} (${userInfo.storageUnits} Units of Storage)</text>
 
   <!-- Labels -->
   <text x="40" y="130" fill="white" font-family="Arial" font-size="${fontMedSize}" font-weight="bold">Casts (${userInfo.castsLimit?.used}/${userInfo.castsLimit?.limit})</text>
@@ -75,7 +75,7 @@ function makeSVGBuffer(userInfo: UserInfoArguments): Buffer {
 
   <!-- Follows Bar -->
   <rect x="40" y="290" width="${maxUsageWidth}" height="20" style="fill:#333;stroke-width:1;stroke:#808080"/>
-  <rect x="40" y="290" width="${castBarSize}" height="20" fill="#808080" />
+  <rect x="40" y="290" width="${linksBarSize}" height="20" fill="#808080" />
 </svg>`;
   return Buffer.from(svgString);
 }
