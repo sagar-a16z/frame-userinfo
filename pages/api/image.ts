@@ -30,7 +30,7 @@ function calculateBarSize(
   storageLimit: StorageLimit | undefined,
   max: number
 ): number {
-  return (storageLimit?.used || 0 / (storageLimit?.limit || 1)) * max;
+  return ((storageLimit?.used || 0) / (storageLimit?.limit || 1)) * max;
 }
 
 function makeSVGBuffer(userInfo: UserInfoArguments): Buffer {
