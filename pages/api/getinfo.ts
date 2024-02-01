@@ -1,5 +1,10 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { getSSLHubRpcClient, Message } from "@farcaster/hub-nodejs";
+import {
+  FidRequest,
+  getSSLHubRpcClient,
+  Message,
+  StoreType,
+} from "@farcaster/hub-nodejs";
 import { UserInfoArguments, encodeUserInfoArguments } from "./image";
 
 const HUB_URL = process.env["HUB_URL"] || "nemes.farcaster.xyz:2283";
@@ -21,17 +26,47 @@ export default async function handler(
           validatedMessage = result.value.message;
         }
 
-        const buttonId =
-          validatedMessage?.data?.frameActionBody?.buttonIndex || 0;
+        const userData: UserInfoArguments = {};
         const fid = validatedMessage?.data?.fid || 0;
+        let storageUnits = 0;
 
-        const userData: UserInfoArguments = {
-          fid: fid,
-          casts: 10,
-          maxCasts: 500,
-          reactions: 500,
-          maxReactions: 500,
-        };
+        const storageLimitResult = await client.getCurrentStorageLimitsByFid(
+          FidRequest.create({ fid })
+        );
+        if (storageLimitResult.isOk()) {
+          const storageLimits = storageLimitResult.value;
+          storageUnits = storageLimits.units;
+          for (const limit of storageLimits.limits) {
+            switch (limit.storeType) {
+              case StoreType.CASTS:
+                userData.castsLimit = limit;
+                break;
+              case StoreType.REACTIONS:
+                userData.reactionsLimit = limit;
+                break;
+              case StoreType.LINKS:
+                userData.linksLimit = limit;
+                break;
+              case StoreType.VERIFICATIONS:
+                userData.verificationsLimit = limit;
+                break;
+              default:
+                break;
+            }
+          }
+        } else {
+          return res.status(400).send("Missing user data");
+        }
+
+        // const userData: UserInfoArguments = {
+        //   fid: fid,
+        //   fname: "doe",
+        //   storageUnits,
+        //   casts: 10,
+        //   maxCasts: 500,
+        //   reactions: 500,
+        //   maxReactions: 500,
+        // };
 
         const hosted_url = `https://${req.headers["host"]}`;
         const imageUrl = `${hosted_url}/api/image?data=${encodeUserInfoArguments(
